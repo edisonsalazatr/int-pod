@@ -1,0 +1,131 @@
+apiVersion: __apiVersion__
+kind: Deployment
+metadata:
+  name: __OCBuildName__
+  labels:
+    environment: __environment__
+    app: __OCBuildName__
+spec:
+  replicas: __Replicas__
+  selector:
+    matchLabels:
+      app: __OCBuildName__
+  template:
+    metadata:
+      labels:
+        environment: __environment__
+        app: __OCBuildName__
+    spec:
+      initContainers:
+      - name: log-cleanup
+        image: __imageRegistry__/__OCProjectName__/__OCBuildName__:__tagVersion__
+        imagePullPolicy: Always
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        command: ["sh", "-c"]
+        args:
+        - |
+          cd /home/eam/dss-worker/log/eam/logs || exit 0
+          [ -n "$POD_NAME" ] || exit 0
+          RS="${POD_NAME%-*}"
+          # 1. pulizia per data
+          find . -maxdepth 1 -type f \( -name '*.log.gz' -o -name '*.tmp' -o -name '*.hprof' \) \
+            -mtime +__logRetentionDays__ -printf 'data: %p\n' -delete
+          find . -maxdepth 1 -type f -name '*.log' ! -name "${RS}-*" -mtime +1 -printf 'log attivo: %p\n' -delete
+          # 2. pulizia per spazio
+          CAP_MB="__logTotalSizeCapMB__"
+          case "$CAP_MB" in ''|*[!0-9]*) exit 0 ;; esac
+          LIMIT=$((CAP_MB * 1024 * 1024))
+          TOTAL=0
+          for s in $(find . -maxdepth 1 -type f -printf '%s\n'); do TOTAL=$((TOTAL + s)); done
+          find . -maxdepth 1 -type f \( -name '*.log.gz' -o -name '*.tmp' -o -name '*.hprof' \) \
+            -printf '%T@ %s %p\n' | sort -n | while read -r t s f; do
+            [ "$TOTAL" -le "$LIMIT" ] && break
+            rm -f -- "$f" && TOTAL=$((TOTAL - s)) && echo "spazio: $f"
+          done
+          exit 0
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            memory: 128Mi
+        volumeMounts:
+        - name: eam-dss-worker-log
+          mountPath: /home/eam/dss-worker/log
+      containers:
+      - name: __OCProjectName__
+        image: __imageRegistry__/__OCProjectName__/__OCBuildName__:__tagVersion__
+        imagePullPolicy: Always
+        env:
+        - name: JAVA_TOOL_OPTIONS
+          value: "-XX:+UseSerialGC __JavaXms__ __JavaXmx__"
+        - name: maximoApiKey1
+          valueFrom:
+            secretKeyRef:
+              name: dss-worker-secret
+              key: maximo-api-key-1
+        - name: maximoApiKey2
+          valueFrom:
+            secretKeyRef:
+              name: dss-worker-secret
+              key: maximo-api-key-2
+        ports:
+        - containerPort: 8100
+          name: http
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8100
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8100
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        resources:
+          requests:
+            cpu: __RequestsCPU__
+            memory: "__RequestsMemory__"
+          limits:
+            memory: "__LimitsMemory__"
+        volumeMounts:
+        - name: kafka-keystore
+          readOnly: true
+          mountPath: /home/eam/dss-worker/secrets
+        - name: eam-dss-worker-log
+          mountPath : /home/eam/dss-worker/log
+        - name: eam-dss-worker-logback
+          mountPath: /home/eam/dss-worker/config/logback.xml
+          subPath: logback.xml
+        - name: eam-dss-worker-volume-claim
+          mountPath: /home/eam/dss-worker/config/properties.json
+          subPath: properties.json
+      volumes: 
+      - name: eam-dss-worker-volume-claim
+        configMap:
+          name: __OCBuildName__-configmap
+      - name: eam-dss-worker-logback
+        configMap:
+          name: __OCBuildName__-logback-configmap
+      - name : eam-dss-worker-log
+        persistentVolumeClaim:
+          claimName: eam-dss-worker-volume-claim-log
+      - name: kafka-keystore
+        secret:
+          secretName: kafka-keystore
+          items:
+            - key: keystore.jks
+              path: keystore.jks
+          defaultMode: 420

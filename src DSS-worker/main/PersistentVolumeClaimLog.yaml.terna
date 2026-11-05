@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: eam-dss-worker-volume-claim-log
+  namespace: __OCProjectName__
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: __EamDssWorkerPVStorageClassName__
+  volumeMode: Filesystem

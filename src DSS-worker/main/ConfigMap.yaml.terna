@@ -1,0 +1,225 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: __OCBuildName__-configmap
+  namespace: __OCProjectName__
+data:
+  properties.json: |
+    {
+        "connections": {
+            "eam" : {
+                "databaseFeatures": {
+                    "databasePlatformDialect": "org.hibernate.dialect.Oracle12cDialect",
+                    "databaseVendor": "ORACLE",
+                    "persistenceUnitName": "pu-EAM",
+                    "showSql": __dsEamShowSql__
+                },
+                "datasource": {
+                    "allowPoolSuspension": "false",
+                    "characterEncoding": "utf8",
+                    "connectionLeakDetection": "0",
+                    "connectionTimeout": "__dsEamConnectionTimeout__",
+                    "connectionUrl": "__dsEamConnectionUrl__",
+                    "connectionValidationTimeout": "__dsEamConnectionValidationTimeout__",
+                    "idleTimeout": "__dsEamIdleTimeout__",
+                    "maximumConnectionLifetime": "__dsEamMaximumConnectionLifetime__",
+                    "maximumPoolSize": "__dsEamMaximumPoolSize__",
+                    "minConnectionsInIdle": "__dsEamMinConnectionsInIdle__",
+                    "password": "__dsEamPassword__",
+                    "useUnicode": "true",
+                    "username": "__dsEamUsername__",
+                    "schema": "__dsEamSchema__"
+                },
+                "jpaProperties": {
+                    "hibernate.enable_lazy_load_no_trans": "true"
+                }
+            }
+        },
+        "nosql" : {
+            "settings": {
+                "hosts" : "__mongoHostsAndPorts__",
+                "databaseName": "__mongoDatabaseName__",
+                "replicaSetName": "__mongoReplicaSet__",
+                "username": "__mongoUser__",
+                "password": "__mongoPasswd__",
+                "applicationName": "DSS-WORKER",
+                "connectTimeout": __mongoConnectionTimeout__,
+                "socketTimeout": __mongoSocketTimeout__,
+                "socketReadTimeout": __mongoSocketReadTimeout__,
+                "maximumConnectionIdleTime": __mongoMaxConnectionIdle__,
+                "maximumConnectionLifeTime": __mongoMaxConnectionLife__,
+                "minimumPoolSize": __mongoMinimumPoolSize__,
+                "maximumPoolSize": __mongoMaximumPoolSize__,
+                "maximumThreadBlockForConnectionWaitTime": __mongoMaxThreadBlockConnWaitTime__,
+                "heartbeatConnectTimeout": __mongoHeartbeatTimeout__,
+                "minimumHeartbeatFrequency": __mongoHeartbeatFrequency__
+            }
+        },
+        "encription" : {
+            "jasypt" : {
+                "algorithm" : "PBEWITHHMACSHA256ANDAES_256",
+                "password" : "Accenture.1!",
+                "pbePoolSize" : 4,
+                "fixedSaltGeneratorString" : "dhn284tfjalsdcp943re3vty544nucie724brfu"
+            }
+        },
+        "kafka" : {
+            "producer" : {
+                "enabled" : true,
+                "acks": "all",
+                "batchSize": 65536 ,
+                "bootstrapServers": "__kafkaBootstrapServers__",
+                "compressionType": "snappy",
+                "deliveryTimeoutMs": 600000,
+                "enableIdempotence": true,
+                "lingerMs": 100,
+                "maxInFlightRequestsPerConnection": 5,
+                "reconnectBackoffMaxMs": 100000,
+                "reconnectBackoffMs": 10000,
+                "requestTimeoutMs": 30000,
+                "retries": 12,
+                "retryBackoffMs": 1000,
+                "protocol": "__kafkaProtocol__",
+                "truststoreLocation": "__kafkaTruststoreLocation__",
+                "truststorePassword": "__kafkaKeystorePassword__"
+            },
+            "consumer" : {
+                "enabled" : true,
+                "bootstrapServers": "__kafkaBootstrapServers__",
+                "connectionsMaxIdleMs": 10000,
+                "fetchMinimumBytes": 16384,
+                "fetchMaximumBytes": 4194304,
+                "fetchMaximumWaitMs": 100,
+                "groupId": "eam-dss-worker__kafkaTopicSuffix__",
+                "periodicGroupId": "eam-dss-worker-periodiche__kafkaTopicSuffix__",
+                "secondaryGroupIdList": "eam-dss-worker-microcontrolli__kafkaTopicSuffix__",
+                "reconnectBackoffMaxMs": 100000,
+                "reconnectBackoffMs": 10000,
+                "requestTimeoutMs": 30000,
+                "retryBackoffMs": 1000,
+                "sessionTimeoutMs": 30000,
+                "socketConnectionSetupTimeoutMaxMs": 60000,
+                "socketConnectionSetupTimeoutMs": 30000,
+                "listenOnTopicPattern": "",
+                "maximumPollRecords": 1,
+                "maximumPollIntervalMs": __kafkaMaximumPollIntervalMs__,
+                "protocol": "__kafkaProtocol__",
+                "truststoreLocation": "__kafkaTruststoreLocation__",
+                "truststorePassword": "__kafkaKeystorePassword__"
+            }
+        },
+        "broker" : {
+            "enabled": true,
+            "processNotificationInterval": 120000,
+            "endPoints": {
+                "evaluatePolicy": {
+                    "entityName": "topic-mas-dss-workers__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for requesting policy evaluation on asset",
+                    "entityObjectName": "Request for policy evaluation",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "__topicMasDssWorkerConcurrency__",
+                    "entityNumberOfPartition": "__topicMasDssWorkerPartition__",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssWorkerRetry__"
+                },
+                "evaluatePolicyPeriodiche": {
+                    "entityName": "topic-mas-dss-workers-periodiche__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for requesting policy evaluation on asset",
+                    "entityObjectName": "Request for policy evaluation",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "__topicMasDssWorkerPeriodicheConcurrency__",
+                    "entityNumberOfPartition": "__topicMasDssWorkerPeriodichePartition__",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssWorkerPeriodicheRetry__"
+                },
+                "handleWorkerFeedback": {
+                    "entityName": "topic-mas-handle-worker-feedback__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for trunk ispection",
+                    "entityObjectName": "Request for trunk ispection",
+                    "entityObjectClass": "it.terna.nas.service.exposure.events.WorkerFeedbackRequestEvent",
+                    "entityUuidMethodName": "getCorrelationId",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3"
+                },
+                "workerHandleMicrocontrolli": {
+                    "entityName": "topic-mas-handle-worker-microcontrolli__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for handle microcontrolli",
+                    "entityObjectName": "Request for handling microcontrolli",
+                    "entityObjectClass": "it.terna.nas.service.exposure.events.MicrocontrolliRequestEvent",
+                    "entityUuidMethodName": "getKey",
+                    "entityConcurrency": "__topicMasDssWorkerMicrocontrolliConcurrency__",
+                    "entityNumberOfPartition": "__topicMasDssWorkerMicrocontrolliPartition__",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssMicrocontrolliRetry__"
+                }
+            }
+        }, 
+        "cache": {
+            "selectedCacheManager": "__selectedCacheManager__",
+            "config": {
+                "cacheTtlMinutes": __cacheTtlMinutes__,
+                "cacheMaxSize": __cacheMaxSize__,
+                "cacheHostName": "__cacheHostName__",
+                "cacheHostPort": "__cacheHostPort__",
+                "cacheHostUsername": "__cacheHostUsername__",
+                "cacheHostPassword": "__cacheHostPassword__",
+                "latencyLoggerEnabled": __latencyLoggerEnabled__,
+                "compressionEnabled": __compressionEnabled__
+             }
+        },        
+        "http" : {
+            "settings": {
+                "maximumConnectionPerRoute": "__httpMaximumConnectionPerRoute__",
+                "maximumConnectionTotal": "__httpMaximumConnectionTotal__",
+                "connectionTimeout" : "__httpConnectionTimeout__",
+                "validateAfterInactivity" : "__httpValidateAfterInactivity__",
+                "idleConnectionMonitorDelay" : "__httpIdleConnectionMonitorDelay__",
+                "securityByPass": false
+            },
+            "entity" : {
+                "MXAPIWO" : {
+                    "component" : "MXAPIWO",
+                    "description" : "HTTP call to get/save MXAPIWO on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4WORKORDER"
+                },
+                "X4WOACTIVITY" : {
+                    "component" : "X4WOACTIVITY",
+                    "description" : "HTTP call to get/save X4WOACTIVITY on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4WOACTIVITY"
+                }
+            }
+        },
+        "api": {
+            "microcontrolli": {
+                "enabled": __enableMicroControlliBatch__,
+                "batchSize": __batchSizeMicroControlli__,
+                "policy": "__filterMicroControlliPolicy__",
+                "tipologiaAsset": "__filterMicroControlliTypeAsset__"
+            },
+            "retry": {
+                "maxAttempts": __apiWorkorderRetryMaxAttempts__,
+                "delay": __apiWorkorderRetryDelay__
+            }, 
+            "disableTransaction": {
+                "enabled": __enableAllowAllOrNothing__,
+                "filter" : {
+                    "aggregate": __filterAllowAllOrNothingAggregate__,
+                    "tronco": __filterAllowAllOrNothingTronco__,
+                    "policy": "__filterAllowAllOrNothingPolicy__",
+                    "tipologiaAsset": "__filterAllowAllOrNothingTypeAsset__"
+                }
+            }
+        },
+        "executorThreadPool" : __threadPoolParallelism__,
+        "writePolicyContext" : __writePolicyContext__,
+        "bypassEventWorkerBusinessLogic": __bypassEventWorkerBusinessLogic__,
+        "periodicStatusDisable": __periodicStatusDisable__
+    }

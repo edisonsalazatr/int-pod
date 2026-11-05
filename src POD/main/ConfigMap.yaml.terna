@@ -1,0 +1,667 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: __OCBuildName__-configmap
+  namespace: __OCProjectName__
+data:
+  properties.json: |
+    {
+        "connections": {
+            "eam" : {
+                "databaseFeatures": {
+                    "databasePlatformDialect": "org.hibernate.dialect.Oracle12cDialect",
+                    "databaseVendor": "ORACLE",
+                    "persistenceUnitName": "pu-EAM",
+                    "showSql": __dsEamShowSql__
+                },
+                "datasource": {
+                    "allowPoolSuspension": "false",
+                    "characterEncoding": "utf8",
+                    "connectionLeakDetection": "0",
+                    "connectionTimeout": "__dsEamConnectionTimeout__",
+                    "connectionUrl": "__dsEamConnectionUrl__",
+                    "connectionValidationTimeout": "__dsEamConnectionValidationTimeout__",
+                    "idleTimeout": "__dsEamIdleTimeout__",
+                    "maximumConnectionLifetime": "__dsEamMaximumConnectionLifetime__",
+                    "maximumPoolSize": "__dsEamMaximumPoolSize__",
+                    "minConnectionsInIdle": "__dsEamMinConnectionsInIdle__",
+                    "useUnicode": "true",
+                    "schema": "__dsEamSchema__"
+                },
+                "jpaProperties": {
+                    "hibernate.enable_lazy_load_no_trans": "true"
+                }
+            }
+        },
+        "encription" : {
+            "jasypt" : {
+                "algorithm" : "PBEWITHHMACSHA256ANDAES_256",
+                "password" : "Accenture.1!",
+                "pbePoolSize" : 4,
+                "fixedSaltGeneratorString" : "dhn284tfjalsdcp943re3vty544nucie724brfu"
+            }
+        },
+        "kafka" : {
+            "producer" : {
+                "enabled" : true,
+                "acks": "all",
+                "batchSize": 65536 ,
+                "bootstrapServers": "__kafkaBootstrapServers__",
+                "compressionType": "snappy",
+                "deliveryTimeoutMs": 600000,
+                "enableIdempotence": true,
+                "lingerMs": 100,
+                "maxInFlightRequestsPerConnection": 5,
+                "reconnectBackoffMaxMs": 100000,
+                "reconnectBackoffMs": 10000,
+                "requestTimeoutMs": 30000,
+                "retries": 12,
+                "retryBackoffMs": 1000,
+                "protocol": "__kafkaProtocol__",
+                "truststoreLocation": "__kafkaTruststoreLocation__",
+                "truststorePassword": "__kafkaKeystorePassword__"
+            },
+            "consumer" : {
+                "enabled" : true,
+                "bootstrapServers": "__kafkaBootstrapServers__",
+                "connectionsMaxIdleMs": 10000,
+                "fetchMinimumBytes": 1,
+                "fetchMaximumBytes": 4194304,
+                "fetchMaximumWaitMs": 100,
+                "groupId": "eam-integration",
+                "groupIdModifyAsset": "eam-int-modify-asset__kafkaTopicSuffix__",
+                "groupIdAcquisitionNtk": "eam-int-acquisition-ntk__kafkaTopicSuffix__",
+                "groupIdSendTypeAsset": "eam-int-send-type-asset__kafkaTopicSuffix__",
+                "groupIdSendSapStornoToGeocall": "eam-int-send-sap-storno-to-geocall__kafkaTopicSuffix__",
+                "groupIdEamNotifyToGeocall": "eam-int-notify-to-geocall__kafkaTopicSuffix__",
+                "groupIdAgileInvioIndisponibilita": "eam-int-agile-invio-indisponibilita__kafkaTopicSuffix__",
+                "groupIdAgileInvioIndisponibilitaMulti": "eam-int-agile-invio-indisponibilita-multi__kafkaTopicSuffix__",
+                "groupIdCaviInterratiEliminaIspezioni": "eam-int-cavi-interrati-elimina-ispezioni__kafkaTopicSuffix__",
+                "groupIdCaviInterratiInvioIspezioni": "eam-int-cavi-interrati-invio-ispezioni__kafkaTopicSuffix__",
+                "groupIdSendOdLToElive": "eam-int-send-odl-to-elive__kafkaTopicSuffix__",
+                "groupIdSendProvvedimentiPianteToEam": "eam-int-send-provvedimenti-piante-to-eam__kafkaTopicSuffix__",
+                "groupIdAcquisitionOrdIntFromSAP":"eam-int-acquisition-ord-int-from-sap__kafkaTopicSuffix__",
+                "groupIdAcquisitionOdMFromSAP":"eam-int-acquisition-odm-from-sap__kafkaTopicSuffix__",
+                "groupIdStornoTotaleSAP":"eam-int-storno-totale-sap__kafkaTopicSuffix__",
+                "groupIdStornoParzialeSAP":"eam-int-storno-parziale-sap__kafkaTopicSuffix__",
+                "groupIdAcquisitionCountableDataFromSAP":"eam-int-acquisition-countable-data-from-sap__kafkaTopicSuffix__",
+                "groupIdLaborSAP":"eam-int-labor-sap__kafkaTopicSuffix__",
+                "groupIdLaborSAPExt":"eam-int-labor-sap-ext__kafkaTopicSuffix__",
+                "groupIdClosureOdMSAP":"eam-int-closure-odm-sap__kafkaTopicSuffix__",
+                "groupIdClosureNtkSAP":"eam-int-closure-ntk-sap__kafkaTopicSuffix__",
+                "reconnectBackoffMaxMs": 100000,
+                "reconnectBackoffMs": 10000,
+                "requestTimeoutMs": 30000,
+                "retryBackoffMs": 1000,
+                "sessionTimeoutMs": 30000,
+                "socketConnectionSetupTimeoutMaxMs": 60000,
+                "socketConnectionSetupTimeoutMs": 30000,
+                "maximumPollRecords": 1,
+                "maximumPollIntervalMs": 1200000,
+                "listenOnTopicPattern": "",
+                "protocol": "__kafkaProtocol__",
+                "truststoreLocation": "__kafkaTruststoreLocation__",
+                "truststorePassword": "__kafkaKeystorePassword__"
+            }
+        },
+        "broker" : {
+            "enabled" : true,
+            "endPoints" : {
+                "closureNtkSAP": {
+                    "entityName": "eam-closure-ntk-sap__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for closure Ntk SAP",
+                    "entityObjectName": "Closure Ntk SAP",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledClosureNtkSAP__
+                },
+                "closureOdMSAP": {
+                    "entityName": "eam-closure-odm-sap__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for closure OdM SAP",
+                    "entityObjectName": "Closure OdM SAP",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityNumberOfPartition": 1,
+                    "entityNumberOfReplicas": 1,
+                    "entityEnabledTopic": __enabledClosureOdMSAP__
+                },
+                "acquisitionNtkFromSAP": {
+                    "entityName": "eam-acquisition-ntk-sap__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for acquisition Ntk from SAP",
+                    "entityObjectName": "Acquisition Ntk from SAP",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledAcquisitionNtkFromSAP__
+                },
+                "laborSAP": {
+                    "entityName": "eam-send-labor-sap__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for consuntivi to SAP",
+                    "entityObjectName": "Invio Consuntivi to SAP",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledLaborSAP__
+                },
+                "laborSAPExt": {
+                    "entityName": "eam-send-labor-sap-ext__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for consuntivi to SAP Ext",
+                    "entityObjectName": "Invio Consuntivi to SAP Ext",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.sap.KafkaX4Labtrans",
+                    "entityUuidMethodName": "getRefwo",
+                    "entityConcurrency": 9,
+                    "entityNumberOfPartition": 9,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledLaborSAP__
+                },
+                "stornoParzialeSAP": {
+                    "entityName": "eam-hours-transfer-sap-p__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for storno parziale to SAP",
+                    "entityObjectName": "Storno Parziale to SAP",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledStornoParzialeSAP__
+                },
+                "stornoTotaleSAP": {
+                    "entityName": "eam-hours-transfer-sap-t__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for storno totale to SAP",
+                    "entityObjectName": "Storno Totale to SAP",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledStornoTotaleSAP__
+                },
+                "acquisitionOrdIntFromSAP": {
+                    "entityName": "eam-acquisition-oi-sap__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for acquisition OI from SAP",
+                    "entityObjectName": "Acquisition OI from SAP",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledAcquisitionOrdIntFromSAP__
+                },
+                "acquisitionOdMFromSAP": {
+                    "entityName": "eam-acquisition-odm-sap__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for acquisition OdM from SAP",
+                    "entityObjectName": "Acquisition OdM from SAP",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledAcquisitionOdMFromSAP__
+                },
+                "acquisitionCountableDataFromSAP": {
+                    "entityName": "eam-acquisition-dc-sap__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for acquisition DC from SAP",
+                    "entityObjectName": "Acquisition DC from SAP",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledAcquisitionCountableDataFromSAP__
+                },
+                "sendTypeAsset": {
+                    "entityName": "eam-send-type-asset__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for send Assett to GeoCall",
+                    "entityObjectName": "Send Asset to GeoCall",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledSendTypeAsset__
+                },
+                "sendAsset": {
+                    "entityName": "eam-asset-modify__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for send Asset modify to GeoCall",
+                    "entityObjectName": "Send Asset modify to GeoCall",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledSendAsset__
+                },
+                "sendSapStornoGeocall": {
+                    "entityName": "eam-send-sap-storno-geocall__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for sending storno results to GeoCall",
+                    "entityObjectName": "Send Storno Results to GeoCall",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityNumberOfPartition": 1,
+                    "entityNumberOfReplicas": 1,
+                    "entityEnabledTopic": __enabledSendSapStornoGeocall__
+                },      
+                "eamCaviInterratiInvioIspezioni": {
+                    "entityName": "eam-invio-odl-cavi-interrati__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per inviare gli ordini di lavoro a cavi interrati",
+                    "entityObjectName": "Invio degli ordini verso cavi interrati",
+                    "entityObjectClass": "it.terna.nas.service.exposure.events.WorkOrderCaviInterrati",
+                    "entityUuidMethodName": "getUUID",
+                    "entityNumberOfPartition": 1,
+                    "entityNumberOfReplicas": 1,
+                    "entityEnabledTopic": __enabledEamCaviInterratiInvioIspezioni__
+                },
+                "eamCaviInterratiEliminaIspezioni": {
+                    "entityName": "eam-invio-odl-delete-cavi-interrati__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per inviare le cancellazioni di odl a cavi interrati",
+                    "entityObjectName": "Invio dele cancellazione cavi interrati",
+                    "entityObjectClass": "it.terna.nas.service.exposure.events.WODeleteCAVI",
+                    "entityUuidMethodName": "getUUID",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledEamCaviInterratiEliminaIspezioni__
+                }, 
+                "sendOdLToElive": {
+                    "entityName": "eam-send-odl-elive__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for send OdL to Elive",
+                    "entityObjectName": "Send OdL to Elive",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.KafkaOdlToEliveRequest",
+                    "entityUuidMethodName": "getWonum",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledSendOdLToElive__
+                },
+                "eamAgileInvioIndisponibilita": {
+                    "entityName": "eam-send-odl-to-agile__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic for sending OdL unavailability requests to AGILE 2.0",
+                    "entityObjectName": "Send OdL to AGILE 2.0",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.KafkaOdlToAgileRequest",
+                    "entityUuidMethodName": "getWonum",
+                    "entityNumberOfPartition": 1,
+                    "entityNumberOfReplicas": 1,
+                    "entityEnabledTopic": __enabledEamAgileInvioIndisponibilita__
+                },
+                "eamAgileInvioIndisponibilitaMulti": {
+                    "entityName": "eam-send-odl-to-agile-multi__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka multi-partition topic for sending OdL unavailability requests to AGILE 2.0",
+                    "entityObjectName": "Send OdL to AGILE 2.0 Multi",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.KafkaOdlToAgileRequest",
+                    "entityUuidMethodName": "getAssetnum",
+                    "entityConcurrency": 3,
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledEamAgileInvioIndisponibilitaMulti__
+                },
+                "sendProvvedimentiPianteToEam": {
+                    "entityName": "eam-receive-provvedimenti-piante__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for send OdL to Elive",
+                    "entityObjectName": "Send OdL to Elive",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.KafkaProvvedimentiPianteMessage",
+                    "entityUuidMethodName": "getUuid",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3,
+                    "entityEnabledTopic": __enabledSendProvvedimentiPianteToEam__
+                },
+                "eamNotifyToGeocall": {
+                    "entityName": "eam-notifiche-geocall__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for sending notifications to GeoCall",
+                    "entityObjectName": "Send Notifications to GeoCall",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityEnabledTopic": __enabledEamNotifyToGeocall__
+                }
+            }
+        }, 
+        "cache": {
+            "selectedCacheManager": "cacheManagerCaffeine",
+            "config": {
+                "cacheTtlMinutes": 60,
+                "cacheMaxSize": 20,
+                "cacheHostName": "nas-redis",
+                "cacheHostPort": "6379",
+                "cacheHostUsername": "default",
+                "cacheHostPassword": "01ternausr01"
+            }
+        },
+        "http" : {
+            "certificateCaEam": {
+                "truststoreLocation": "/home/eam/integration/secrets/eam-ca-certificate.jks",
+                "truststorePassword": "__certificateCaPassword__",
+                "enable": "__certificateCaEnable__",
+                "enableOSB": "__osbCertificateEnable__"
+            },
+            "settings": {
+                "maximumConnectionPerRoute": "__httpMaximumConnectionPerRoute__",
+                "maximumConnectionTotal": "__httpMaximumConnectionTotal__",
+                "connectionTimeout" : "__httpConnectionTimeout__",
+                "validateAfterInactivity" : "__httpValidateAfterInactivity__",
+                "idleConnectionMonitorDelay" : "__httpIdleConnectionMonitorDelay__",
+                "securityByPass": "__securityByPass__",
+                "oAuth2Enable": "__oAuth2Enable__",
+                "clientCredential": "client_credentials",
+                "scope": "__scope__",
+                "scopeOSB": "__scopeOsb__",
+                "authGrantType": "authorization_code",
+                "azureUri": "__azureUri__",
+                "authEndpoint": "__authEndpoint__",
+                "tokenEndpoint": "__tokenEndpoint__",
+                "jwtEndpoint": "__jwtEndpoint__",
+                "userInfoUri": "__userInfoUri__",
+                "proxyHost": "__proxyHost__",
+                "proxyPort": "__proxyPort__"
+            },
+            "entity" : {
+                "closureNtkSAP" : {
+                    "component" : "ClosureNtk",
+                    "description" : "ClosureNtk SAP",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriOsbSAP__/ESB/SAP/NTW_Close/1.0",
+                    "uriStub": "NOT_SUPPORTED"
+                },
+                "closureOdMSAP" : {
+                    "component" : "ClosureOdM",
+                    "description" : "ClosureOdM SAP",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriOsbSAP__/ESB/SAP/ODM_Close/1.0",
+                    "uriStub": "NOT_SUPPORTED"
+                },
+                "acquisitionNtkSAP" : {
+                    "component" : "AcquisitionNtk",
+                    "description" : "AcquisitionNtk from SAP",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriOsbSAP__/ESB/SAP/NTW_Query/1.0",
+                    "uriStub": "NOT_SUPPORTED"
+                },
+                "sapConsuntivazione" : {
+                    "component" : "Invio Consuntivi",
+                    "description" : "Invio Consuntivi to SAP",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriOsbSAP__/ESB/SAP/ODL_Consuntivazione/1.0",
+                    "uriStub": "NOT_SUPPORTED"
+                },
+                "sapCheckPeriodo" : {
+                    "component" : "CheckPeriodoContabile",
+                    "description" : "Check Periodo Contabile to SAP",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriOsbSAP__/ESB/SAP/PeriodoContabile_Check/1.0",
+                    "uriStub": "NOT_SUPPORTED"
+                },
+                "sapCounterOdM" : {
+                    "component" : "StornoSearchSAP",
+                    "description" : "Storno CounterOdM Search to SAP",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriOsbSAP__/ESB/SAP/ODM_Storno_Search/1.0",
+                    "uriStub": "NOT_SUPPORTED"
+                },
+                "sapStorno" : {
+                    "component" : "StornoSAP",
+                    "description" : "Storno Execute to SAP",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriOsbSAP__/ESB/SAP/ODM_Storno_Execute/1.0",
+                    "uriStub": "NOT_SUPPORTED"
+                },
+                "acquisitionOISAP" : {
+                    "component" : "AcquisitionOI",
+                    "description" : "AcquisitionOI from SAP",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriAcquisizioneOrdIntSAP__/eamsapw2/sap/v1.0/zzpmOrdiniInterniEam",
+                    "uriStub" : "NOT_SUPPORTED"
+                },
+                "acquisitionOdMSAP" : {
+                    "component" : "AcquisitionOdM",
+                    "description" : "AcquisitionOdM from SAP",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriAcquisizioneOrdIntSAP__/eamsapw2/sap/v1.0/zwsClOdm",
+                    "uriStub" : "NOT_SUPPORTED"
+                },
+                "X4OPNTK" : {
+                    "component" : "X4OPNTK",
+                    "description" : "HTTP call to get/save X4OPNTK on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4OPNTK"
+                },
+                "X4NTK" : {
+                    "component" : "X4NTK",
+                    "description" : "HTTP call to get/save X4NTK on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4NTK"
+                },
+                "X4LABTRANS" : {
+                    "component" : "X4LABTRANS",
+                    "description" : "HTTP call to get/save X4LABTRANS on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4LABTRANS"
+                },
+                "X4ODM" : {
+                    "component" : "X4ODM",
+                    "description" : "HTTP call to get/save X4ODM on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4ODM"
+                },
+                "X4ORDINT" : {
+                    "component" : "X4ORDINT",
+                    "description" : "HTTP call to get/save X4ORDINT on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4ORDINT"
+                },
+                "X4ODMOP" : {
+                    "component" : "X4ODMOP",
+                    "description" : "HTTP call to get/save X4ORDINT on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4ODMOP"
+                },
+                "saveX4Esito" : {
+                    "component" : "X4ESITOINT",
+                    "description" : "X4ESITOINT save X4ESITOINT on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4ESITOINT"
+                },
+                "X4APIWOLABTRANS" : {
+                    "component" : "X4APIWOLABTRANS",
+                    "description" : "HTTP call to get/save X4APIWOLABTRANS on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4APIWOLABTRANS"
+                },
+                "X4INTODLGEOCALL" : {
+                    "component" : "X4INTODLGEOCALL",
+                    "description" : "HTTP call to get/save X4INTODLGEOCALL on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4INTODLGEOCALL"
+                },
+                "X4WORKORDER" : {
+                    "component" : "X4WORKORDER",
+                    "description" : "HTTP call to get/save X4WORKORDER on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4WORKORDER"
+                },
+                "X4WBE" : {
+                    "component" : "X4WBE",
+                    "description" : "HTTP call to get/save X4WBE on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4WBE"
+                },
+                "callOAuth2" : {
+                    "component" : "OAuth2",
+                    "description" : "CALL OAuth2",
+                    "method" : "POST",
+                    "uri" : "http://eam-integration:8095/eam/ws/oauth2/DOC_WEBI_ZMOS_WS_NTW_CHECK.wsdl"
+                },
+                "sendTypeAsset" : {
+                    "component" : "sendTypeAsset",
+                    "description" : "HTTP POST to call Geocall SOAP for send type asset",
+                    "method" : "POST",
+                    "uri" : "__httpUriSendTypeAsset__",
+                    "uriStub" : "__httpUriSendTypeAssetStub__"
+                },
+                "agileAddInvioOdlApim" : {
+                    "component" : "sendOdlToAgile",
+                    "description" : "HTTP POST to call APIM for invio odl AGILE",
+                    "method" : "POST",
+                    "uri" : "__httpUriAgileRequestApim__",
+                    "uriStub" : "NOT_SUPPORTED"
+                },
+                "agileUpdateInvioOdlApim" : {
+                    "component" : "sendOdlToAgile",
+                    "description" : "HTTP POST to call APIM for invio odl AGILE",
+                    "method" : "POST",
+                    "uri" : "__httpUriAgileRequestApim__",
+                    "uriStub" : "NOT_SUPPORTED"
+                },
+                "cancelOrBlock" : {
+                    "component" : "cancelAndblock",
+                    "description" : "HTTP POST to call Geocall SOAP for cancel or block",
+                    "method" : "POST",
+                    "uri" : "__httpUriCancelOrBlock__",
+                    "uriStub" : "__httpUriCancelOrBlockStub__"
+                },
+                "cancelOperation" : {
+                    "component" : "cancelOperation",
+                    "description" : "HTTP POST to call Geocall SOAP for canceling operation",
+                    "method" : "POST",
+                    "uri" : "__httpUriCancelOperation__",
+                    "uriStub" : "__httpUriCancelOperationStub__"
+                },
+                "sendOdL" : {
+                    "component" : "sendOdL",
+                    "description" : "HTTP POST to call Geocall SOAP for send OdL",
+                    "method" : "POST",
+                    "uri" : "__httpUriSendOdL__",
+                    "uriStub" : "__httpUriSendOdLStub__"
+                },
+                "modifyAsset" : {
+                    "component" : "modifyAsset",
+                    "description" : "HTTP POST to call Geocall SOAP for modify asset",
+                    "method" : "POST",
+                    "uri" : "__httpUriModifyAsset__",
+                    "uriStub" : "__httpUriModifyAssetStub__"
+                },
+                "X4APIWOASS" : {
+                    "component" : "X4APIWOASS",
+                    "description" : "HTTP call to get/save X4APIWOASS on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4APIWOASS"
+                },
+                "sendOdlToCavi" : {
+                    "component" : "Send OdL to CAVI",
+                    "description" : "HTTP POST for sending OdL to CAVI",
+                    "method" : "PUT",
+                    "uri" : "__httpUriSendOdlToCavi__",
+                    "uriStub" : "__sendOdlToCaviStub__"
+                },
+                "sendOdLDeleteToCavi" : {
+                    "component" : "Send OdL deletion to CAVI",
+                    "description" : "HTTP POST for sending OdL deletion to CAVI",
+                    "method" : "DELETE",
+                    "uri" : "__httpUriSendOdLDeleteToCavi__",
+                    "uriStub" : "__sendOdLDeleteToCaviStub__"
+                },
+                "sendStorno" : {
+                    "component" : "Send Storno to GeoCall",
+                    "description" : "HTTP POST for sending Storno to GeoCall",
+                    "method" : "POST",
+                    "uri" : "__httpUriSendStorno__",
+                    "uriStub" : "__sendStornoToGeoCallStub__"
+                },
+                "saveX4Difforstat" : {
+                    "component" : "X4DIFFORSTAT",
+                    "description" : "X4DIFFORSTAT save X4DIFFORSTAT on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4DIFFORSTAT"
+                },
+                "eliveInvioOdlApim" : {
+                    "component" : "sendOdlToElive",
+                    "description" : "HTTP POST to call APIM for invio odl ELIVE",
+                    "method" : "POST",
+                    "uri" : "__httpUriEliveInvioOdlApim__",
+                    "uriStub" : "__httpUriSendOdlToEliveStub__"
+                },
+                "saveX4IndispWO" : {
+                    "component": "saveX4IndispWO",
+                    "description": "HTTP POST for save record to X4INDISPWO",
+                    "method": "POST",
+                    "uri": "https://__httpUriMaximo__/maximo/api/os/X4INDISPAGILE"
+                },
+                "saveX4Interfstat" : {
+                    "component" : "X4INTERFSTAT",
+                    "description" : "save X4INTERFSTAT on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4INTERFSTAT"
+                },
+                "acquisitionCountableDataSAP" : {
+                    "component" : "acquisitionCountableDataSAP",
+                    "description" : "HTTP POST to call for acquisition Countable Data SAP",
+                    "method" : "POST",
+                    "uri" : "__httpUriAcquisitionCountableDataSAP__",
+                    "uriStub" : "__httpUriAcquisitionCountableDataSAPStub__"
+                },
+                "X4NOTIFYSCHEDULEODL" : {
+                    "component" : "X4NOTIFYSCHEDULEODL",
+                    "description" : "HTTP call to launch X4NOTIFYSCHEDULEODL script on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/script/X4NOTIFYSCHEDULEODL"
+                }
+            }
+        },
+        "process" : {
+            "X4ESITOINT_RESTART" : {
+                "processTimeout" : 600000
+            }
+        },
+        "executorThreadPool" : 100,
+        "resubmit": __resubmit__,
+        "resubmitSapId": __resubmitSapId__,
+        "resubmitLabTransConsuntivi": __resubmitLabTransConsuntivi__,
+        "hostHeaderByPass": "__hostHeaderByPass__",
+        "apiIntraHostName": "__apiIntraHostName__",
+        "x4EsitoIntScheduleFixedRate": __x4EsitoIntScheduleFixedRate__,
+        "x4SisnetAddressScheduleFixedRate": __x4SisnetAddressScheduleFixedRate__,
+        "x4RenameSapIdFixedRate": __x4RenameSapIdFixedRate__,
+        "interferenze": {
+            "elive" : {
+                "interferenzaVerticaleBasso": "__interferenzaVerticaleBasso__",
+                "interferenzaVerticaleAlto": "__interferenzaVerticaleAlto__",
+                "interferenzaVerticaleSingolo": "__interferenzaVerticaleSingolo__",
+                "interferenzaVerticaleAreale": "__interferenzaVerticaleAreale__",   
+                "interferenzaSbandataBasso":  "__interferenzaSbandataBasso__",
+                "interferenzaSbandataAlto":  "__interferenzaSbandataAlto__",
+                "interferenzaSbandataSingolo":  "__interferenzaSbandataSingolo__",
+                "interferenzaSbandataAreale":  "__interferenzaSbandataAreale__",	    
+                "interferenzaRibaltamentoBasso": "__interferenzaRibaltamentoBasso__",
+                "interferenzaRibaltamentoAlto": "__interferenzaRibaltamentoAlto__",
+                "interferenzaRibaltamentoSingolo": "__interferenzaRibaltamentoSingolo__",
+                "interferenzaRibaltamentoAreale": "__interferenzaRibaltamentoAreale__"
+            }
+        },
+        "sap-properties": {
+            "statoDummy": "Dummy",
+            "startDate": "1900-01-01",
+            "formatDate": "yyyy-MM-dd",
+            "noDate": "0000-00-00",
+            "modEsecuzione": "T,E",
+            "batchSize": 500
+        },
+        "x4EsitoIntCleanupCron": "__x4EsitoIntCleanupCron__",
+        "x4EsitoIntSchedulerCron": "__x4EsitoIntSchedulerCron__",
+        "eamOdlDssSkip": __eamOdlDssSkip__,
+        "isOAuth2": true,
+        "TargetUrgentiInterferenzaElive" : "__targetUrgentiInterf__",
+        "TargetDifferibiliInterferenzaElive" : "__targetDifferibiliInterf__",
+        "uriMaximo" : "__httpUriMaximo__"
+    }

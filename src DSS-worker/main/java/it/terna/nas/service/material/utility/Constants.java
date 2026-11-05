@@ -1,0 +1,134 @@
+package it.terna.nas.service.material.utility;
+
+import java.util.Set;
+import it.terna.nas.service.material.utility.Catalog.WorkOrderStatus;
+
+public interface Constants
+{
+    public static final String      TZ_ITALY                         = "Europe/Rome";
+    public static final String      DATE_JSON_FORMAT                 = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    public static final String      API_KEY                          = "apikey";
+    public static final String      AUTHORIZATION                    = "Authorization";
+    public static final String      BEARER                           = "Bearer ";
+    public static final String      DATE_FORMAT                      = "yyyyMMdd HH:mm:ss";
+    public static final String      COMBINATION_SEPARATOR            = ";";
+    public static final String      OPEN_STATUS                      = "OPEN";
+    public static final String      CLOSED_STATUS                    = "CLOSED";
+    public static final String      ASSET_CONDUTTORE                 = "LIN_TIPO_CONDUTTORE_AEREO";
+    public static final String      ASSET_FUNE_GUARDIA               = "LIN_TIPO_FUNE_GUARDIA";
+    public static final String      CLASS_CONDUTTORI                 = "CONDUTTORI";    
+    public static final String      CLASS_CONDUTTORE                 = "CONDUTTORE";
+    public static final String      CLASS_FUNI_GUARDIA               = "FUNI DI GUARDIA";
+    public static final String      CLASS_FUNE_GUARDIA               = "FUNE DI GUARDIA";
+    public static final String      CLASS_TELAIO                     = "TELAIO";
+    public static final String      CLASS_CAMPATA                    = "CAMPATA AEREA";
+    public static final String      CLASS_TRATTA_CAVO                = "TRATTA CAVO";
+    public static final String      CLASS_MICROCONTROLLO             = "MICROCONTROLLO";
+    public static final String      PREFIX_DSS_WONUM                 = "D";
+    public static final String      NOT_DEFINED                      = "ND";
+    
+    // cache
+    public static final String      CACHE_MANAGER                    = "cacheManagerGeneric";
+    public static final String      CACHE_TRAINANTE_TRAINATO         = "CACHE_TRAINANTE_TRAINATO";
+    public static final String      CACHE_ASSET                      = "CACHE_ASSET";
+    public static final String      CACHE_ASSET_STAZIONE             = "CACHE_ASSET_STAZIONE";
+    public static final String      CACHE_POLICY                     = "CACHE_POLICY";
+    public static final String      CACHE_POLICY_KEY_PREFIX          = "policy-";
+    public static final String      CACHE_MODELLO_ASSET              = "CACHE_MODELLO_ASSET";
+    public static final String      CACHE_MACROATTIVITA              = "CACHE_MACROATTIVITA";
+    public static final String      CACHE_IDONEITA                   = "CACHE_IDONEITA";
+    public static final String      CACHE_ECCEZIONI                  = "CACHE_ECCEZIONI";
+    public static final String      CACHE_CLASSSTRUCTURE_LEVEL       = "CACHE_CLASSSTRUCTURE_LEVEL";
+    public static final String      CACHE_DSS_DICTIONARY			 = "CACHE_DSS_DICTIONARY";
+    public static final String      REPLACEMENT_ACTIVITY             = "SOSTITUZIONE";
+    public static final String      CLASS_LINEA                      = "LINEA";
+    public static final String      CLASS_STAZIONE                   = "STAZIONE";
+    public static final int         ASSET_LEVEL_3                    = 3;
+    public static final Integer     ASSET_LEVEL_1                    = Integer.valueOf(1);
+    public static final String      SEP1                             = "|";
+    public static final String      SEP2                             = ",";
+    public static final String      SEP3                             = "[";
+    public static final String      SEP4                             = "]";
+    public static final String      SEP5                             = "_";
+    public static final String      SEP6                             = "=";
+    public static final String      SEP7                             = "-";
+    public static final String      ATTR_IDONEITA_BASE               = "LIN_IDONEITA";
+    public static final String      ATTR_IDONEITA_LINEA              = "LIN_IDONEITA";
+    public static final String      ATTR_IDONEITA_LINEA_UF           = "LIN_IDONEITA_UF";
+    public static final String      ATTR_IDONEITA_LINEA_SPCC         = "LIN_IDONEITA_SPCC";
+    public static final String 		ATTRIBUTO_ZONIZZAZIONE           = "LIN_ZONA_AMBIENTALE";
+
+
+    public static final String      STATO_IDONEO                     = "IDONEO";
+
+    public static final String      FORMULA_ITEM_REGEX               = "##%d@@";
+    public static final String      SLIM_VERSION                     = "_slim";
+
+    // API MAXIMO
+    public static final String      PARAM_LEAN                       = "lean";
+    public static final String      PARAM_VALUE_LEAN                 = "1";
+    public static final String      POD_NAME                         = "podname";
+    public static final String      X_METHOD_OVERRIDE                = "x-method-override";
+    public static final String      PATCHTYPE                        = "patchtype";
+    public static final String      PATCH                            = "PATCH";
+    public static final String      MERGE                            = "MERGE";
+    public static final String      UPDATE                           = "Update";
+    public static final String      ADD                              = "Add";
+    public static final String      DELETE                           = "Delete";
+    public static final String      BULK                             = "BULK";
+    public static final String      OSLC_WHERE                       = "oslc.where";
+    public static final String      OSLC_SELECT                      = "oslc.select";
+    public static final String      OSLC_PAGE_SIZE                   = "oslc.pageSize";
+    public static final String      OSLC_PAGING                      = "oslc.paging";
+    public static final String      WILDCARD                         = "*";
+    public static final String      PAGE_SIZE                        = "200";
+    public static final String      EQUAL                            = "=";
+    public static final String      COMMA_SEPARATOR                  = ",";
+    public static final String      FORMAT_DATA_BASIC_ISO_8601       = "yyyyMMdd";
+    public static final String      FORMAT_DATA_ISO_8601             = "yyyy-MM-dd";
+    public static final String      FORMAT_DATA_ISO_8601_TIME        = "yyyy-MM-dd HH:mm:ss";
+    public static final String      MAXIMO_DATE_AND_TIME             = "yyyy-MM-dd'T'HH:mm:ss";
+    public static final String      SITEID                           = "SIT01";
+    public static final String      CLIENTE_DEFAULT                  = "TR01";
+    public static final String      CONTENT_TYPE                     = "Content-Type";
+    public static final String      APPLICATION_JSON                 = "application/json";
+    public static final String      ACCEPT                           = "accept";
+    public static final String      PROPERTIES                       = "properties";
+    public static final String      ALL_OR_NOTHING                   = "allornothing";
+    public static final String      ALL_OR_NOTHING_VALUE             = "1";
+    public static final String      AGGREGATE_ORDERS_PREFIX          = "AGG_";
+    public static final String      ODL_PREVALSO_NOTE                = "OdL prevalso";
+    public static final String      ODL_PREVALENTE_TO_CREATE         = "TOBECALCULATED";
+    public static final String      POLICY                           = "POLICY";
+    public static final String      ATTIVITA                         = "ATTIVITA";
+    public static final String      DIFFORMITA                       = "DIFFORMITA";
+    public static final String      INTERFERENZA                     = "INTERFERENZA";
+    public static final String      CHIUSO                           = "CHIUSO";
+    public static final String      X4NATURALAVORO_DSS               = "ASSISTENZA";
+    public static final Integer     HAS_OUTSOURCING                  = 1;
+    public static final Set<String> TRAINATO_TRAINANTE_ENABLE        = Set.of(CLASS_CONDUTTORE, CLASS_FUNE_GUARDIA);
+    public static final String      END_POINT_HANDLE_WORKER_FEEDBACK = "handleWorkerFeedback";
+    public static final String      TRAINATO_TRAINANTE_SAVE          = "TRAINATO_TRAINANTE_SAVE";
+    public static final String      TRONCO_SAVE                      = "TRONCO_SAVE";
+    public static final String      AGGREGATE_SAVE                   = "AGGREGATE_SAVE";
+    public static final String      ZONIZZAZIONE              		 = "ZONIZZAZIONE";
+    public static final String      AGGREGATE_STAZIONE_SAVE          = "AGGREGATE_STAZIONE_SAVE";
+    public static final String      AGGREGATE_COND_SAVE              = "AGGREGATE_COND_SAVE";
+    public static final String      AGGREGATE_FUNE_SAVE              = "AGGREGATE_FUNE_SAVE";
+    public static final String      AGGREGATE_STRUTTURA_SAVE         = "AGGREGATE_STRUTTURA_SAVE";
+    public static final String      MODIFY                           = "MODIFY";
+    public static final Integer     IVERO                            = Integer.valueOf(1);
+    public static final Integer     IFALSO                           = Integer.valueOf(0);
+    public static final String      S1COND                           = "S1COND";
+    public static final String 		CLASS_TRONCO_ISPEZIONE           = "TRONCO DI ISPEZIONE";
+    public static final String		SELEG							 = "S.ELEG";
+    public static final String      CLASSSTRUCTURE_LINEA             = "L";
+    public static final String      CLASSSTRUCTURE_STAZIONE          = "S";
+    public static final Integer     ONE                              = Integer.valueOf(1);
+    public static Set<String>       STATUS_OPEN                      = Set.of(WorkOrderStatus.DA_VALIDARE.getCode(), WorkOrderStatus.APERTO.getCode());
+    public static final Set<String> STATI_ELEGGIBILI                 = Set.of(WorkOrderStatus.APERTO.getCode(), WorkOrderStatus.DA_VALIDARE.getCode(), WorkOrderStatus.SCHEDULABILE.getCode(), WorkOrderStatus.SCHEDULATO.getCode(), WorkOrderStatus.INOLTRATO.getCode(), WorkOrderStatus.AVVIATO.getCode(), WorkOrderStatus.ESEGUITO_PAR.getCode());
+    public static final Set<String> STATI_SCHEDULATI                 = Set.of(WorkOrderStatus.SCHEDULABILE.getCode(), WorkOrderStatus.SCHEDULATO.getCode(), WorkOrderStatus.INOLTRATO.getCode(), WorkOrderStatus.AVVIATO.getCode(), WorkOrderStatus.ESEGUITO_PAR.getCode(), WorkOrderStatus.ESEGUITO.getCode());
+    public static final int			TASK_ID_INCREMENT				 = 10;
+    public static final String      LIN_RIF_POSIZIONE                = "LIN_RIF_POSIZIONE";
+    public static final String      SPLIT_SEP1                       = "\\|";
+}

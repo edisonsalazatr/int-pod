@@ -1,0 +1,515 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: __OCBuildName__-configmap
+  namespace: __OCProjectName__
+data:
+  properties.json: |
+    {
+        "connections": {
+            "eam" : {
+                "databaseFeatures": {
+                    "databasePlatformDialect": "org.hibernate.dialect.Oracle12cDialect",
+                    "databaseVendor": "ORACLE",
+                    "persistenceUnitName": "pu-EAM",
+                    "showSql": __dsEamShowSql__
+                },
+                "datasource": {
+                    "allowPoolSuspension": "false",
+                    "characterEncoding": "utf8",
+                    "connectionLeakDetection": "0",
+                    "connectionTimeout": "__dsEamConnectionTimeout__",
+                    "connectionUrl": "__dsEamConnectionUrl__",
+                    "connectionValidationTimeout": "__dsEamConnectionValidationTimeout__",
+                    "idleTimeout": "__dsEamIdleTimeout__",
+                    "maximumConnectionLifetime": "__dsEamMaximumConnectionLifetime__",
+                    "maximumPoolSize": "__dsEamMaximumPoolSize__",
+                    "minConnectionsInIdle": "__dsEamMinConnectionsInIdle__",
+                    "password": "__dsEamPassword__",
+                    "useUnicode": "true",
+                    "username": "__dsEamUsername__",
+                    "schema": "__dsEamSchema__"
+                },
+                "jpaProperties": {
+                    "hibernate.enable_lazy_load_no_trans": "true"
+                }
+            }
+        },
+        "encription" : {
+            "jasypt" : {
+                "algorithm" : "PBEWITHHMACSHA256ANDAES_256",
+                "password" : "Accenture.1!",
+                "pbePoolSize" : 4,
+                "fixedSaltGeneratorString" : "dhn284tfjalsdcp943re3vty544nucie724brfu"
+            }
+        },
+        "kafka" : {
+            "producer" : {
+                "enabled" : true,
+                "acks": "all",
+                "batchSize": 65536 ,
+                "bootstrapServers": "__kafkaBootstrapServers__",
+                "compressionType": "snappy",
+                "deliveryTimeoutMs": 600000,
+                "enableIdempotence": true,
+                "lingerMs": 100,
+                "maxInFlightRequestsPerConnection": 5,
+                "reconnectBackoffMaxMs": 100000,
+                "reconnectBackoffMs": 10000,
+                "requestTimeoutMs": 30000,
+                "retries": 12,
+                "retryBackoffMs": 1000,
+                "protocol": "__kafkaProtocol__",
+                "truststoreLocation": "__kafkaTruststoreLocation__",
+                "truststorePassword": "__kafkaKeystorePassword__"
+            },
+            "consumer" : {
+                "enabled" : true,
+                "bootstrapServers": "__kafkaBootstrapServers__",
+                "connectionsMaxIdleMs": 10000,
+                "fetchMinimumBytes": 16384,
+                "fetchMaximumBytes": 4194304,
+                "fetchMaximumWaitMs": 100,
+                "groupId": "eam-dss-manager__kafkaTopicSuffix__",
+                "reconnectBackoffMaxMs": 100000,
+                "reconnectBackoffMs": 10000,
+                "requestTimeoutMs": 30000,
+                "retryBackoffMs": 1000,
+                "sessionTimeoutMs": 30000,
+                "socketConnectionSetupTimeoutMaxMs": 60000,
+                "socketConnectionSetupTimeoutMs": 30000,
+                "listenOnTopicPattern": "",
+                "protocol": "__kafkaProtocol__",
+                "maximumPollRecords": 1,
+                "maximumPollIntervalMs": __kafkaMaximumPollIntervalMs__,
+                "truststoreLocation": "__kafkaTruststoreLocation__",
+                "truststorePassword": "__kafkaKeystorePassword__"
+            },
+            "streams" : {
+                "applicationId" : "eam-dss-manager-kafkastream__kafkaTopicSuffix__",
+                "bootstrapServers": "__kafkaBootstrapServers__",
+                "protocol": "__kafkaProtocol__",
+                "truststoreLocation": "__kafkaTruststoreLocation__",
+                "truststorePassword": "__kafkaKeystorePassword__",
+                "stateStoreName": "state-store-topic"
+            }
+        },
+        "broker" : {
+            "enabled" : true,
+            "endPoints": {
+                "dssEventHandlerManager": {
+                    "entityName": "topic-mas-handle-events__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per l'aggiunta di una nuova policy",
+                    "entityObjectName": "Acquisizione nuova policy",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.policy.EventDTO",
+                    "entityUuidMethodName": "getKafkaKey",
+                    "entityConcurrency": "9",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssEventRetry__"
+                },
+                "dssPeriodicPolicyHandlerManager": {
+                    "entityName": "topic-mas-handle-periodic__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per l'aggiunta di una nuova policy",
+                    "entityObjectName": "Acquisizione nuova policy",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssPeriodicRetry__"
+                },
+                "workerEvaluatePolicy": {
+                    "entityName": "topic-mas-dss-workers__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for Evaluate Worker Policy",
+                    "entityObjectName": "Evaluate Policy",
+                    "entityObjectClass": "it.terna.nas.service.exposure.events.WorkedPolicyRequestEvent",
+                    "entityUuidMethodName": "getNotify",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3"
+                },
+                "workerEvaluatePeriodichePolicy": {
+                    "entityName": "topic-mas-dss-workers-periodiche__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for Evaluate Worker Policy",
+                    "entityObjectName": "Evaluate Policy Periodiche",
+                    "entityObjectClass": "it.terna.nas.service.exposure.events.WorkedPolicyRequestEvent",
+                    "entityUuidMethodName": "getNotify",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3"
+                },
+                "dssPolicyChangeEventHandlerManager": {
+                    "entityName": "topic-mas-handle-policy-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per la modifica di una policy",
+                    "entityObjectName": "Modifica di una policy",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssPolicyChangeRetry__"
+                },
+                "dssPolicyRecoveryEventHandlerManager": {
+                    "entityName": "topic-mas-handle-asset-recovery-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per il recovery di una policy",
+                    "entityObjectName": "Recovery di una policy",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssPolicyRecoveryRetry__"
+                },
+                "dssCreateOdLEventHandlerManager": {
+                    "entityName": "topic-mas-handle-odl-create-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per la creazione di un OdL",
+                    "entityObjectName": "Creazione OdL",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.workorder.WorkOrderDTO",
+                    "entityUuidMethodName": "getWonum",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssCreateOdLEventRetry__"
+                },
+                "dssChangeDifforForAssetEventHandlerManager": {
+                    "entityName": "topic-mas-handle-diffor-asset-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic create or change difformita associata ad Asset",
+                    "entityObjectName": "Create or change difformita associata ad Asset",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssChangeDifforForAssetRetry__"
+                },
+                "dssChangeDifforEventHandlerManager": {
+                    "entityName": "topic-mas-handle-diffor-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic create or change difformita",
+                    "entityObjectName": "Create or change difformita",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssChangeDifforRetry__"
+                },
+                "dssChangeInterForAssetEventHandlerManager": {
+                    "entityName": "topic-mas-handle-inter-asset-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic create or change interferenza associata ad Asset",
+                    "entityObjectName": "Create or change interferenza associata ad Asset",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssChangeInterForAssetRetry__"
+                },
+                "dssChangeInterEventHandlerManager": {
+                    "entityName": "topic-mas-handle-inter-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic create or change interferenza",
+                    "entityObjectName": "Create or change interferenza",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssChangeInterRetry__"
+                },
+                "dssChangeHiForAssetEventHandlerManager": {
+                    "entityName": "topic-mas-handle-hi-asset-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic create or change HI",
+                    "entityObjectName": "Create or change HI",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "1",
+                    "entityNumberOfPartition": "1",
+                    "entityNumberOfReplicas": "1",
+                    "entityNumberRetry": "__topicDssChangeHiForAssetRetry__"
+                },
+                "dssChangeAssetEventHandlerManager": {
+                    "entityName": "topic-mas-handle-asset-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic create or change Asset",
+                    "entityObjectName": "Create or change Asset",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "1",
+                    "entityNumberOfPartition": "1",
+                    "entityNumberOfReplicas": "1",
+                    "entityNumberRetry": "__topicDssChangeAssetRetry__"
+                },
+                "dssChangeModelloAsset": {
+                    "entityName": "topic-mas-handle-modelli-target-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic to handle modello asset changes",
+                    "entityObjectName": "Modello asset changes",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssChangeModelloRetry__"
+                },
+                "dssChangeMisureAsset": {
+                    "entityName": "topic-mas-handle-misure-asset-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic to handle measure asset changes",
+                    "entityObjectName": "Measure asset changes",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "1",
+                    "entityNumberOfPartition": "1",
+                    "entityNumberOfReplicas": "1",
+                    "entityNumberRetry": "__topicDssChangeMisureRetry__"
+                },
+                "dssChangeIdoneitaAsset": {
+                    "entityName": "topic-mas-handle-idoneita-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic to handle idoneita changes",
+                    "entityObjectName": "Idoneita asset changes",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssChangeIdoneitaRetry__"
+                },
+                "dssChangeAttivitaAsset": {
+                    "entityName": "topic-mas-handle-attivita-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic to handle attivita changes",
+                    "entityObjectName": "Attivita asset changes",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssChangeAttivitaRetry__"
+                },
+                "dssChangeEccezioneAsset": {
+                    "entityName": "topic-mas-handle-eccezioni-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic to handle eccezioni changes",
+                    "entityObjectName": "Eccezioni asset changes",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssChangeEccezioneRetry__"
+                },
+                "dssChangeAssetSpecForAssetEventHandlerManager": {
+                    "entityName": "topic-mas-handle-assetspec-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic create or change AssetSpec for Asset",
+                    "entityObjectName": "Create or change AssetSpec for Asset",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "1",
+                    "entityNumberOfPartition": "1",
+                    "entityNumberOfReplicas": "1",
+                    "entityNumberRetry": "__topicDssChangeAssetSpecForAssetRetry__"
+                },
+                "dssStreamFeedbackEventHandlerManager": {
+                    "entityName": "topic-mas-handle-worker-feedback__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic for save feedback message to worker",
+                    "entityObjectName": "feedback Topic",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.worker.MessageStreamCounter",
+                    "entityUuidMethodName": "getTimestamp",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3"
+                },
+                "dssStreamResultEventHandlerManager": {
+                    "entityName": "topic-mas-stream-result-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic for elaborate feedback message",
+                    "entityObjectName": "feedback Topic",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.worker.WorkerFeedbackRequestEvent",
+                    "entityUuidMethodName": "getCorrelationId",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssStreamResultRetry__"
+                },
+                "stateStoreChangelog": {
+                    "entityName": "eam-dss-manager-kafkastream__kafkaTopicSuffix__-state-store-topic-changelog",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic state store topic changelog",
+                    "entityObjectName": "State store topic changelog",
+                    "entityObjectClass": "java.lang.String",
+                    "entityUuidMethodName": "getId",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3"
+                },
+                "dssClosedPeriodicOdLEventHandlerManager": {
+                    "entityName": "topic-mas-handle-odl-closed-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per la ricezione chiusura di un OdL",
+                    "entityObjectName": "chiusura OdL",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.workorder.WorkOrderDTO",
+                    "entityUuidMethodName": "getWonum",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssClosedPeriodicOdLEventRetry__"
+                },
+                "dssMicrocontrolliStart": {
+                    "entityName": "topic-mas-dss-batch-microcontrolli__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per avviare migrazione microcontrolli",
+                    "entityObjectName": "MIG microcontrolli",
+                    "entityObjectClass": "it.terna.nas.service.exposure.events.MicrocontrolliStartRequestEvent",
+                    "entityUuidMethodName": "getImportKey",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3"
+                },
+                "workerHandleMicrocontrolli": {
+                    "entityName": "topic-mas-handle-worker-microcontrolli__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for handle microcontrolli",
+                    "entityObjectName": "Request for handling microcontrolli",
+                    "entityObjectClass": "it.terna.nas.service.exposure.events.MicrocontrolliRequestEvent",
+                    "entityUuidMethodName": "getKey",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3"
+                },
+                "integrationSendEliveMessage": {
+                    "entityName": "eam-send-odl-elive__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per l'invio odl Elive",
+                    "entityObjectName": "send message OdL",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.workorder.WorkOrderDTO",
+                    "entityUuidMethodName": "getWonum",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3"
+                },            
+                "integrationSendClosureNtkMessage": {
+                    "entityName": "eam-closure-ntk-sap__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per l'invio odl per chiusura ntk",
+                    "entityObjectName": "send message OdL",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.workorder.WorkOrderDTO",
+                    "entityUuidMethodName": "getWonum",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3"
+                },
+                "integrationSendGeocallMessage": {
+                    "entityName": "eam-notifiche-geocall__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per l'invio odl a Geocall",
+                    "entityObjectName": "send message OdL",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.workorder.WorkOrderDTO",
+                    "entityUuidMethodName": "getWonum"
+                },
+                "integrationSendSapStornoTotaleMessage": {
+                    "entityName": "eam-hours-transfer-sap-t__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per l'invio Storno Totale a Sap",
+                    "entityObjectName": "send message OdL",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.workorder.WorkOrderDTO",
+                    "entityUuidMethodName": "getWonum",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3"
+                },
+                "integrationSendCaviMessage": {
+                    "entityName": "eam-invio-odl-cavi-interrati__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per l'invio OdL a Cavi",
+                    "entityObjectName": "send message OdL",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.workorder.WorkOrderDTO",
+                    "entityUuidMethodName": "getWonum"
+                },
+                "integrationSendCaviDeleteMessage": {
+                    "entityName": "eam-invio-odl-delete-cavi-interrati__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic per l'invio OdL a Cavi",
+                    "entityObjectName": "send message OdL",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.workorder.WorkOrderDTO",
+                    "entityUuidMethodName": "getWonum",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3"
+                },
+                "dssForwardOdLHandlerManager": {
+                    "entityName": "topic-mas-handle-forward-odl-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "Kafka topic create or change Asset",
+                    "entityObjectName": "Create or change Asset",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityConcurrency": "1",
+                    "entityNumberOfPartition": "1",
+                    "entityNumberOfReplicas": "1",
+                    "entityNumberRetry": "__topicDssForwardOdLRetry__"
+                },                
+                "dssEventHiCalcHandler": {
+                    "entityName": "topic-mas-handle-hi-calc__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for calculate hi",
+                    "entityObjectName": "Request for calculate hi",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.hi.HiCalcDTO",
+                    "entityUuidMethodName": "getAssetNum",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "__topicDssHiCalcRetry__"
+                },
+                "dssEventTriggerLevelHandler": {
+                    "entityName": "topic-mas-handle-livellotrigger-change-event__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for handle change trigger level policy",
+                    "entityObjectName": "Request for change of trigger level policy",
+                    "entityObjectClass": "it.terna.nas.service.material.dto.policy.TriggerLivelloPolicyDto",
+                    "entityUuidMethodName": "getId",
+                    "entityConcurrency": "3",
+                    "entityNumberOfPartition": "3",
+                    "entityNumberOfReplicas": "3",
+                    "entityNumberRetry": "2"
+                }
+            }
+        }, 
+        "cache": {
+            "selectedCacheManager": "__selectedCacheManager__",
+            "config": {
+                "cacheTtlMinutes": __cacheTtlMinutes__,
+                "cacheMaxSize": __cacheMaxSize__,
+                "cacheHostName": "__cacheHostName__",
+                "cacheHostPort": "__cacheHostPort__",
+                "cacheHostUsername": "__cacheHostUsername__",
+                "cacheHostPassword": "__cacheHostPassword__"
+             }
+        },        
+        "http" : {
+            "settings": {
+                "maximumConnectionPerRoute": "__httpMaximumConnectionPerRoute__",
+                "maximumConnectionTotal": "__httpMaximumConnectionTotal__",
+                "connectionTimeout" : "__httpConnectionTimeout__",
+                "validateAfterInactivity" : "__httpValidateAfterInactivity__",
+                "idleConnectionMonitorDelay" : "__httpIdleConnectionMonitorDelay__",
+                "securityByPass": false
+            }
+        },
+        "executorThreadPool" : __threadPoolParallelism__,
+        "executorSendKafkaAssetNumThreadPool": __threadSendKafkaAssetNum__,
+        "executorTroncoThreadPool": __troncoThreadPoolParallelism__,
+        "bypassBusinessLogic": __bypassBusinessLogic__,
+        "bypassEventManagerBusinessLogic": __bypassEventManagerBusinessLogic__,
+        "disableIntegration": __disableIntegration__,
+        "disableHiCalc": __disableHiCalc__,
+        "archiveDayDelay" : __archiveDayDelay__,
+        "archiveDeleteBatchSize" : __archiveDeleteBatchSize__,
+        "archiveScheduleCron": "__archiveScheduleCron__"
+    }

@@ -1,0 +1,30 @@
+{
+	"entity": {
+		"area": {
+			"insertAreasListSizeMax": "10",
+			"insertAreasListSizeMin": "1",
+			"retrieveLimitMax": "100",
+			"retrieveLimitMin": "1",
+			"retrieveOffsetMin": "1",
+			"retrieveSortListSizeMax": "8",
+			"retrieveSortListSizeMin": "0",
+			"updateAreasListSizeMax": "10",
+			"updateAreasListSizeMin": "1"
+		}
+	},
+	"shared": {
+		"invalidFieldValue": "%s must be greater than or equal to %s",
+		"invalidRequest": "Invalid request",
+		"missingField": "%s is missing",
+		"missingRequiredIfField": "If field %s has been provided, a value for field %s must be provided too",
+		"mustMatchPattern": "%s must match %s",
+		"repetitionsFound": "%s repetitions found in the list",
+		"repetitionsFoundDetailed": "%s repetitions found in the list for field %s",
+		"tenant": "Tenant %s does not exist",
+		"valueNotInRange": "value must be between %s and %s",
+		"wrongLength": "length must be between %s and %s",
+		"wrongListElementLength": "%s length of each element must be between %s and %s",
+		"wrongSize": "size must be between %d and %d",
+		"wrongSort": "Sort element value must match to %s"
+	}
+}

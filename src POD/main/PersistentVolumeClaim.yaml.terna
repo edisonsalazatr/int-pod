@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eam-integration-persitent-volume-claim-disabled
+  namespace: __OCProjectName__
+data:
+  disabled: "true"

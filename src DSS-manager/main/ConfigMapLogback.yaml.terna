@@ -1,0 +1,68 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: __OCBuildName__-logback-configmap
+  namespace: __OCProjectName__
+data:
+  logback.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <configuration scan="true" scanPeriod="30 seconds">
+        <statusListener class="ch.qos.logback.core.status.OnErrorConsoleStatusListener" />
+
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <Pattern>
+                    %d{yyyy-MM-dd HH:mm:ss.SSS}|%X{transactionId}|[%thread]|%-5level|%logger{36}|%msg%n
+                </Pattern>
+            </layout>
+        </appender>    
+
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>log/eam/logs/${hostname}.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!-- daily rollover -->
+                <fileNamePattern>log/eam/logs/${hostname}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+
+                <!-- maximum file size -->
+                <maxFileSize>__maxFileSize__</maxFileSize>
+                <!-- keep X days' worth of history capped at Y total size -->
+                <maxHistory>__maxHistory__</maxHistory>
+                <totalSizeCap>__totalSizeCap__</totalSizeCap>
+            </rollingPolicy>
+    
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}|%X{transactionId}|[%thread]|%-5level|%logger{36}|%msg%n</pattern>
+            </encoder>
+        </appender>
+
+
+        <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+            <appender-ref ref="FILE" />
+        </appender>
+
+        <logger name="it.terna.nas.service" level="__nasServiceLevel__" additivity="false">
+            <appender-ref ref="STDOUT" />
+            <appender-ref ref="ASYNC" />
+        </logger>
+
+        <logger name="it.terna.kernel" level="__nasKernelLevel__" additivity="false">
+            <appender-ref ref="STDOUT" />
+            <appender-ref ref="ASYNC" />
+        </logger>
+
+        <logger name="org.mongodb.driver.connection" level="__nasMongoLevel__" additivity="false">
+            <appender-ref ref="STDOUT" />
+            <appender-ref ref="ASYNC" />
+        </logger>
+
+        <logger name="it.terna.kernel.http" level="__nasKernelHTTPLevel__" additivity="false">
+            <appender-ref ref="STDOUT" />
+            <appender-ref ref="ASYNC" />
+        </logger>
+
+        <root level="__rootLevel__">
+            <appender-ref ref="STDOUT" />
+            <appender-ref ref="ASYNC" />
+        </root>
+    </configuration>

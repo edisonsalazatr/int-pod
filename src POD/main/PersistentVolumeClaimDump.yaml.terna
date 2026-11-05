@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: eam-integration-configuration-dumps-new
+  namespace: __OCProjectName__
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: __EamIntegrationPVStorageClassName__
+  volumeMode: Filesystem

@@ -1,0 +1,17 @@
+server:
+    port: 8101
+spring:
+    application:
+        name: dss-manager
+        aspect:
+            package-base: it.terna.nas.service
+management:
+    endpoint:
+        health:
+            probes:
+                enabled: true
+    health:
+        livenessState:
+            enabled: true
+        readinessState:
+            enabled: true

@@ -1,0 +1,29 @@
+FROM __ImageRegistry__/__ImageLocation__
+
+# Switch to root to install tools
+USER root
+
+# Install common Linux tools using microdnf (works in OpenShift/UBI images)
+RUN microdnf install -y \
+      curl \
+      wget \
+      iputils \
+      procps-ng \
+      net-tools \
+      vim-minimal \
+      less \
+      which \
+      && microdnf clean all
+
+# Back to your app setup
+ENV APP_DIR=/home/eam/dss-worker
+ENV APP_JAR=dss-worker*.jar
+ENV NAS_EXTERNAL_CONFIGURATIONS=file:/home/eam/dss-worker/config/properties.json
+
+WORKDIR $APP_DIR
+COPY ./$APP_JAR .
+
+# Drop privileges again for security (OpenShift default user is 185)
+USER 185
+
+ENTRYPOINT java -jar -Duser.timezone=Europe/Rome $APP_JAR

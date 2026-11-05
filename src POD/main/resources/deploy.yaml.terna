@@ -1,0 +1,192 @@
+apiVersion: __apiVersion__
+kind: Deployment
+metadata:
+  name: __OCBuildName__
+  labels:
+    environment: __environment__
+    app: __OCBuildName__
+spec:
+  replicas: __Replicas__
+  selector:
+    matchLabels:
+      app: __OCBuildName__
+  template:
+    metadata:
+      labels:
+        environment: __environment__
+        app: __OCBuildName__
+    spec:
+      containers:
+      - name: __OCProjectName__
+        image: __imageRegistry__/__OCProjectName__/__OCBuildName__:__tagVersion__
+        imagePullPolicy: Always
+        env:
+        - name: http.basic.esb.username
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: osb-basicauth-username
+        - name: http.basic.esb.password
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: osb-basicauth-password
+        - name: eam-client-id
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: eam-client-id
+        - name: eam-client-secret
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: eam-client-secret
+        - name: eam-client-id-osb
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: eam-client-id-osb
+        - name: eam-client-secret-osb
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: eam-client-secret-osb
+        - name: elive-client-id
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: elive-client-id
+        - name: cavi-client-id
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: cavi-client-id
+        - name: agile-client-id
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: agile-client-id
+        - name: geocall-client-id
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: geocall-client-id
+        - name: sisnet-client-id
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: sisnet-client-id
+        - name: sap-client-id
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: sap-client-id
+        - name: tagetik-client-id
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: tagetik-client-id
+        - name: connections.eam.datasource.username
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: eam-database-username
+        - name: connections.eam.datasource.password
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: eam-database-password
+        - name: http.oauth2.agile.api-key-agile
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: agile-apikey
+        - name: http.oauth2.cavi.api-key-cavi-interrati
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: cavi-apikey
+        - name: http.oauth2.elive.api-key-elive
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: elive-apikey
+        - name: http.oauth2.geocall.api-key-geocall
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: geocall-apikey
+        - name: maximoApiKey
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-secret-credentials
+              key: maximo-apikey
+        - name: JAVA_TOOL_OPTIONS
+          value: "__JavaXms__ __JavaXmx__"
+        ports:
+        - containerPort: 8095
+          name: http
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8095
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8095
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        resources:
+          requests:
+            cpu: __RequestsCPU__
+            memory: "__RequestsMemory__"
+          limits:
+            memory: "__LimitsMemory__"
+        volumeMounts:
+        - name: eam-keystore
+          readOnly: true
+          mountPath: /home/eam/integration/secrets
+        - name: eam-integration-log
+          mountPath : /home/eam/integration/log
+        - name: eam-integration-dumps
+          mountPath : /home/eam/integration/dumps
+        - name: eam-integration-logback
+          mountPath: /home/eam/integration/config/logback.xml
+          subPath: logback.xml
+        - name: eam-integration-persitent-volume-claim
+          mountPath: /home/eam/integration/config/properties.json
+          subPath: properties.json
+      volumes: 
+      - name: eam-integration-persitent-volume-claim
+        configMap:
+          name: __OCBuildName__-configmap
+      - name: eam-integration-logback
+        configMap:
+          name: __OCBuildName__-logback-configmap
+      - name : eam-integration-log
+        persistentVolumeClaim:
+          claimName: eam-integration-configuration-new
+      - name : eam-integration-dumps
+        persistentVolumeClaim:
+          claimName: eam-integration-configuration-dumps-new
+      - name: eam-keystore
+        projected:
+          sources:
+          - secret:
+              name: eam-integration-secret-credentials
+              items:
+                - key: eam-integration-keystore.jks
+                  path: eam-integration-keystore.jks
+          - secret:
+              name: eam-integration-secret-credentials
+              items:
+                - key: eam-ca-certificate.jks
+                  path: eam-ca-certificate.jks

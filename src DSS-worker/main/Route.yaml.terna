@@ -1,0 +1,21 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: __OCBuildName__
+  namespace: __OCProjectName__
+  annotations:
+    haproxy.router.openshift.io/timeout: 60s
+spec:
+  tls:
+    termination: edge
+    caCertificate: "__CaCertificateRoute__"
+    key: "__PrivateKeyRoute__"
+    certificate: "__CertificateRoute__"
+  host: __OCHostName__
+  port:
+    targetPort: 8100-tcp
+  to:
+    kind: Service
+    name: dss-worker
+    weight: 100
+  wildcardPolicy: None
