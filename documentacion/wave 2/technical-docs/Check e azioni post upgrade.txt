@@ -1,0 +1,5 @@
+In questo file vengono riportati i controlli e le eventuali azioni da fare in seguito agli aggiornamenti di Maximo perché sono modifiche che ci si aspetta di perdere
+
+# APPLICAZIONI MAF
+## RELENGINEER
+- (Riferimento INC0722592) Verificare se si ripresenta il problema sulla modifica delle descrizioni degli HI (X4APMSCOREOBJECTATTR)

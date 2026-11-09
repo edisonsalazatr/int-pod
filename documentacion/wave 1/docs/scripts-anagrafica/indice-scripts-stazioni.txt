@@ -1,0 +1,8 @@
+Crea asset di secondo livello
+Crea asset di terzo livello
+Crea asset di quarto livello
+X3CREATEASSETSTAZDIALOGSAVE
+
+Sposta asset
+X3STZSPOSTAASSETSAVE
+

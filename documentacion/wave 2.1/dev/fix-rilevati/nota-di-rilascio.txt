@@ -1,0 +1,8 @@
+Database configuration 
+aggiungere MBO X4WORELATEDASSET
+aggiornare relazione WORKORDER.X4DIFFORMITAODL
+aggiornare relazione WORKORDER.X4INTERFERENZODL
+
+Automation script
+Aggiungere X4GETWORELATEDASSETS
+Aggiungere X4UPDATEWORELATEDASSETS
