@@ -1,0 +1,11 @@
+FROM __ImageRegistry__/__ImageLocation__
+
+ENV APP_DIR=/home/eam/integration-extended
+ENV APP_JAR=eam-integration-extended*.jar
+ENV NAS_EXTERNAL_CONFIGURATIONS=file:/home/eam/integration-extended/config/properties.json
+
+WORKDIR $APP_DIR
+
+COPY ./$APP_JAR .
+
+ENTRYPOINT java -jar -Duser.timezone=Europe/Rome $APP_JAR

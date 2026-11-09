@@ -1,0 +1,133 @@
+apiVersion: __apiVersion__
+kind: Deployment
+metadata:
+  name: __OCBuildName__
+  labels:
+    environment: __environment__
+    app: __OCBuildName__
+spec:
+  replicas: __Replicas__
+  selector:
+    matchLabels:
+      app: __OCBuildName__
+  template:
+    metadata:
+      labels:
+        environment: __environment__
+        app: __OCBuildName__
+    spec:
+      containers:
+      - name: __OCProjectName__
+        image: __imageRegistry__/__OCProjectName__/__OCBuildName__:__tagVersion__
+        imagePullPolicy: Always
+        env:
+        - name: http.basic.esb.username
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-extended-secret-credentials
+              key: osb-basicauth-username
+        - name: http.basic.esb.password
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-extended-secret-credentials
+              key: osb-basicauth-password
+        - name: eam-client-id
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-extended-secret-credentials
+              key: eam-client-id
+        - name: eam-client-secret
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-extended-secret-credentials
+              key: eam-client-secret
+        - name: connections.eam.datasource.username
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-extended-secret-credentials
+              key: eam-database-username
+        - name: connections.eam.datasource.password
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-extended-secret-credentials
+              key: eam-database-password
+        - name: http.oauth2.servicenow.api-key-servicenow
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-extended-secret-credentials
+              key: servicenow-apikey
+        - name: maximoApiKey
+          valueFrom:
+            secretKeyRef:
+              name: eam-integration-extended-secret-credentials
+              key: maximo-apikey
+        - name: JAVA_TOOL_OPTIONS
+          value: "__JavaXms__ __JavaXmx__"
+        ports:
+        - containerPort: 8200
+          name: http
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8200
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8200
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        resources:
+          requests:
+            cpu: __RequestsCPU__
+            memory: "__RequestsMemory__"
+          limits:
+            memory: "__LimitsMemory__"
+            cpu: __LimitsCPU__
+        volumeMounts:
+        - name: eam-keystore
+          readOnly: true
+          mountPath: /home/eam/integration-extended/secrets
+        - name: eam-integration-extended-log
+          mountPath : /home/eam/integration-extended/log
+        - name: eam-integration-extended-dumps
+          mountPath : /home/eam/integration-extended/dumps
+        - name: eam-integration-extended-logback
+          mountPath: /home/eam/integration-extended/config/logback.xml
+          subPath: logback.xml
+        - name: eam-integration-extended-persitent-volume-claim
+          mountPath: /home/eam/integration-extended/config/properties.json
+          subPath: properties.json
+      volumes: 
+      - name: eam-integration-extended-persitent-volume-claim
+        configMap:
+          name: __OCBuildName__-configmap
+      - name: eam-integration-extended-logback
+        configMap:
+          name: __OCBuildName__-logback-configmap
+      - name : eam-integration-extended-log
+        persistentVolumeClaim:
+          claimName: eam-integration-extended-configuration-new
+      - name : eam-integration-extended-dumps
+        persistentVolumeClaim:
+          claimName: eam-integration-extended-configuration-dumps-new
+      - name: eam-keystore
+        projected:
+          sources:
+          - secret:
+              name: eam-integration-extended-secret-credentials
+              items:
+                - key: eam-integration-keystore.jks
+                  path: eam-integration-keystore.jks
+          - secret:
+              name: eam-integration-extended-secret-credentials
+              items:
+                - key: eam-ca-certificate.jks
+                  path: eam-ca-certificate.jks

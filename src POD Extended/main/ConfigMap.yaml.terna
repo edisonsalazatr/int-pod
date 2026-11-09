@@ -1,0 +1,173 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: __OCBuildName__-configmap
+  namespace: __OCProjectName__
+data:
+  properties.json: |
+    {
+        "connections": {
+            "eam" : {
+                "databaseFeatures": {
+                    "databasePlatformDialect": "org.hibernate.dialect.Oracle12cDialect",
+                    "databaseVendor": "ORACLE",
+                    "persistenceUnitName": "pu-EAM",
+                    "showSql": __dsEamShowSql__
+                },
+                "datasource": {
+                    "allowPoolSuspension": "false",
+                    "characterEncoding": "utf8",
+                    "connectionLeakDetection": "0",
+                    "connectionTimeout": "__dsEamConnectionTimeout__",
+                    "connectionUrl": "__dsEamConnectionUrl__",
+                    "connectionValidationTimeout": "__dsEamConnectionValidationTimeout__",
+                    "idleTimeout": "__dsEamIdleTimeout__",
+                    "maximumConnectionLifetime": "__dsEamMaximumConnectionLifetime__",
+                    "maximumPoolSize": "__dsEamMaximumPoolSize__",
+                    "minConnectionsInIdle": "__dsEamMinConnectionsInIdle__",
+                    "useUnicode": "true",
+                    "schema": "__dsEamSchema__"
+                },
+                "jpaProperties": {
+                    "hibernate.enable_lazy_load_no_trans": "true"
+                }
+            }
+        },
+        "encription" : {
+            "jasypt" : {
+                "algorithm" : "PBEWITHHMACSHA256ANDAES_256",
+                "password" : "Accenture.1!",
+                "pbePoolSize" : 4,
+                "fixedSaltGeneratorString" : "dhn284tfjalsdcp943re3vty544nucie724brfu"
+            }
+        },
+        "kafka" : {
+            "producer" : {
+                "enabled" : true,
+                "acks": "all",
+                "batchSize": 65536 ,
+                "bootstrapServers": "__kafkaBootstrapServers__",
+                "compressionType": "snappy",
+                "deliveryTimeoutMs": 600000,
+                "enableIdempotence": true,
+                "lingerMs": 100,
+                "maxInFlightRequestsPerConnection": 5,
+                "reconnectBackoffMaxMs": 100000,
+                "reconnectBackoffMs": 10000,
+                "requestTimeoutMs": 30000,
+                "retries": 12,
+                "retryBackoffMs": 1000,
+                "protocol": "__kafkaProtocol__",
+                "truststoreLocation": "__kafkaTruststoreLocation__",
+                "truststorePassword": "__kafkaKeystorePassword__"
+            },
+            "consumer" : {
+                "enabled" : true,
+                "bootstrapServers": "__kafkaBootstrapServers__",
+                "connectionsMaxIdleMs": 10000,
+                "fetchMinimumBytes": 16384,
+                "fetchMaximumBytes": 4194304,
+                "fetchMaximumWaitMs": 100,
+                "groupId": "eam-integration-extended__kafkaTopicSuffix__",
+                "reconnectBackoffMaxMs": 100000,
+                "reconnectBackoffMs": 10000,
+                "requestTimeoutMs": 30000,
+                "retryBackoffMs": 1000,
+                "sessionTimeoutMs": 30000,
+                "socketConnectionSetupTimeoutMaxMs": 60000,
+                "socketConnectionSetupTimeoutMs": 30000,
+                "maximumPollRecords": 1,
+                "maximumPollIntervalMs": 1200000,
+                "listenOnTopicPattern": "",
+                "protocol": "__kafkaProtocol__",
+                "truststoreLocation": "__kafkaTruststoreLocation__",
+                "truststorePassword": "__kafkaKeystorePassword__"
+            }
+        },
+        "broker" : {
+            "enabled" : true,
+            "endPoints" : {
+                "sendAsset": {
+                    "entityName": "eam-asset-modify-extended__kafkaTopicSuffix__",
+                    "entityType": "TOPIC",
+                    "entityDescription": "KAFKA Topic for send Asset modify to ServiceNow",
+                    "entityObjectName": "Send Asset modify to ServiceNow",
+                    "entityObjectClass": "it.terna.kernel.service.exposure.process.ProcessStatusResponse",
+                    "entityUuidMethodName": "getProcessId",
+                    "entityNumberOfPartition": 3,
+                    "entityNumberOfReplicas": 3
+                }
+            }
+        }, 
+        "cache": {
+            "selectedCacheManager": "cacheManagerCaffeine",
+            "config": {
+                "cacheTtlMinutes": 60,
+                "cacheMaxSize": 20,
+                "cacheHostName": "nas-redis",
+                "cacheHostPort": "6379",
+                "cacheHostUsername": "default",
+                "cacheHostPassword": "01ternausr01"
+            }
+        },
+        "http" : {
+            "certificateCaEam": {
+                "truststoreLocation": "/home/eam/integration/secrets/eam-ca-certificate.jks",
+                "truststorePassword": "__certificateCaPassword__",
+                "enable": "__certificateCaEnable__",
+                "enableOSB": "__osbCertificateEnable__"
+            },
+            "settings": {
+                "maximumConnectionPerRoute": "__httpMaximumConnectionPerRoute__",
+                "maximumConnectionTotal": "__httpMaximumConnectionTotal__",
+                "connectionTimeout" : "__httpConnectionTimeout__",
+                "validateAfterInactivity" : "__httpValidateAfterInactivity__",
+                "idleConnectionMonitorDelay" : "__httpIdleConnectionMonitorDelay__",
+                "securityByPass": "__securityByPass__",
+                "oAuth2Enable": "__oAuth2Enable__",
+                "clientCredential": "client_credentials",
+                "scope": "__scope__",
+                "authGrantType": "authorization_code",
+                "azureUri": "__azureUri__",
+                "authEndpoint": "__authEndpoint__",
+                "tokenEndpoint": "__tokenEndpoint__",
+                "jwtEndpoint": "__jwtEndpoint__",
+                "proxyHost": "__proxyHost__",
+                "proxyPort": "__proxyPort__"
+            },
+            "entity" : {
+                "saveX4EsitoSnow" : {
+                    "component" : "X4ESITOINTSNOW",
+                    "description" : "X4ESITOINTSNOW save X4ESITOINTSNOW on Maximo Database",
+                    "method" : "POST",
+                    "uri" : "https://__httpUriMaximo__/maximo/api/os/X4ESITOINTSNOW"
+                },
+                "callOAuth2" : {
+                    "component" : "OAuth2",
+                    "description" : "CALL OAuth2",
+                    "method" : "POST",
+                    "uri" : "http://eam-integration:8095/eam/ws/oauth2/DOC_WEBI_ZMOS_WS_NTW_CHECK.wsdl"
+                },
+                "modifyAsset" : {
+                    "component" : "modifyAsset",
+                    "description" : "HTTP PUT to call SNOW for modify asset",
+                    "method" : "PUT",
+                    "uri" : "__httpUriModifyAsset__",
+                    "uriStub" : "__httpUriModifyAssetStub__"
+                }
+            }
+        },
+        "process" : {
+            "X4ESITOINTSNOW_RESTART" : {
+                "processTimeout" : 600000
+            }
+        },
+        "executorThreadPool" : 100,
+        "resubmit": __resubmit__,
+        "resubmitSapId": __resubmitSapId__,
+        "hostHeaderByPass": "__hostHeaderByPass__",
+        "apiIntraHostName": "__apiIntraHostName__",
+        "x4EsitoIntSnowScheduleFixedRate": __x4EsitoIntScheduleFixedRate__,
+        "x4RenameSapIdSnowFixedRate": __x4RenameSapIdFixedRate__,
+        "x4EsitoIntSchedulerCron": "__x4EsitoIntSchedulerCron__"
+    }
