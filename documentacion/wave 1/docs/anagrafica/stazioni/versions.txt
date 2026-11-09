@@ -1,2 +1,0 @@
-EAM_HLD_GEN_ANA_Data Model e Funzionalità Applicative Anagrafica Stazioni_20231219_V3.7.docx	01/12/2025 Andrea Mariani	Versione Accenture
-EAM_HLD_GEN_ANA_Data Model e Funzionalità Applicative Anagrafica Stazioni_20231219_V3.8.docx	13/03/2026 Roberta Soriano	Aggiornamento visualizzazione stati

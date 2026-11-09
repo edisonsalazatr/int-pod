@@ -1,6 +1,0 @@
-per assetlocrel join A_ASSETLOCRELATION where audittimestamp > sysdate - 7
-select * from ASSETLOCRELATION a
-join A_ASSETLOCRELATION aa on aa.ASSETLOCRELATIONID = a.ASSETLOCRELATIONID  
-where aa.EAUDITTIMESTAMP > sysdate - 7;
-
-Classification;
