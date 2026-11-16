@@ -1,0 +1,25 @@
+#X3CONEQART
+#Custom rule handler del connettore MAXIMO-SAP per il calcolo dell'attributo di testata degli equipment delle STAZIONI Eqart
+#v 1.0
+
+from com.terna.integration.sapconnector.step3 import SapTechSpecMappingWarning
+from psdi.server import MXServer
+
+rbnrMap = {'PMTEQAA':'PMTEQS-A', 'PMTEQAE':'PMTEQS-A', 'PMTEQAO':'PMTEQS-A', 'PMTEQBB':'PMTEQS-B', 'PMTEQBG':'PMTEQS-B', 'PMTEQBI':'PMTEQS-B', 'PMTEQBR':'PMTEQS-B', 'PMTEQCC':'PMTEQS-C', 'PMTEQCE':'PMTEQS-C', 'PMTEQCF':'PMTEQS-C', 'PMTEQCG':'PMTEQS-C', 'PMTEQCL':'PMTEQS-C', 'PMTEQCM':'PMTEQS-C', 'PMTEQCO':'PMTEQS-C', 'PMTEQCR':'PMTEQS-C', 'PMTEQCS':'PMTEQS-C', 'PMTEQCV':'PMTEQS-C', 'PMTEQCX':'PMTEQS-C', 'PMTEQFA':'PMTEQS-F', 'PMTEQFD':'PMTEQS-F', 'PMTEQFE':'PMTEQS-F', 'PMTEQFO':'PMTEQS-F', 'PMTEQFV':'PMTEQS-F', 'PMTEQGK':'PMTEQS-G', 'PMTEQHA':'PMTEQS-H', 'PMTEQHB':'PMTEQS-H', 'PMTEQHC':'PMTEQS-H', 'PMTEQHG':'PMTEQS-H', 'PMTEQHI':'PMTEQS-H', 'PMTEQHK':'PMTEQS-H', 'PMTEQHO':'PMTEQS-H', 'PMTEQHP':'PMTEQS-H', 'PMTEQHQ':'PMTEQS-H', 'PMTEQHR':'PMTEQS-H', 'PMTEQHT':'PMTEQS-H', 'PMTEQHU':'PMTEQS-H', 'PMTEQHV':'PMTEQS-H', 'PMTEQIA':'PMTEQS-I', 'PMTEQIE':'PMTEQS-I', 'PMTEQIO':'PMTEQS-I', 'PMTEQJP':'PMTEQS-J', 'PMTEQJR':'PMTEQS-J', 'PMTEQJT':'PMTEQS-J', 'PMTEQOC':'PMTEQS-O', 'PMTEQPA':'PMTEQS-P', 'PMTEQPC':'PMTEQS-P', 'PMTEQPH':'PMTEQS-P', 'PMTEQPL':'PMTEQS-P', 'PMTEQPM':'PMTEQS-P', 'PMTEQPO':'PMTEQS-P', 'PMTEQPQ':'PMTEQS-P', 'PMTEQPT':'PMTEQS-P', 'PMTEQPV':'PMTEQS-P', 'PMTEQPY':'PMTEQS-P', 'PMTEQSO':'PMTEQS-S', 'PMTEQSR':'PMTEQS-S', 'PMTEQST':'PMTEQS-S', 'PMTEQSV':'PMTEQS-S', 'PMTEQT3':'PMTEQS-T', 'PMTEQTA':'PMTEQS-T', 'PMTEQTB':'PMTEQS-T', 'PMTEQTD':'PMTEQS-T', 'PMTEQTF':'PMTEQS-T', 'PMTEQTG':'PMTEQS-T', 'PMTEQTI':'PMTEQS-T', 'PMTEQTM':'PMTEQS-T', 'PMTEQTN':'PMTEQS-T', 'PMTEQTO':'PMTEQS-T', 'PMTEQTP':'PMTEQS-T', 'PMTEQTQ':'PMTEQS-T', 'PMTEQTR':'PMTEQS-T', 'PMTEQTS':'PMTEQS-T', 'PMTEQVC':'PMTEQS-V', 'PMTEQVI':'PMTEQS-V', 'PMTEQYB':'PMTEQS-Y', 'PMTEQYX':'PMTEQS-Y', 'PMTEQZS':'PMTEQS-Z', 'PMTEQZZ':'PMTEQS-Z'}
+
+mxServer = MXServer.getMXServer()
+systemUserInfo = mxServer.getSystemUserInfo()
+
+ruleSet = MXServer.getMXServer().getMboSet("X3SAPASSETSPECRULE", systemUserInfo)
+ruleSet.setWhere("SAPCLASS='%s' AND SAPNAME='Rbnr'"%sapAsset.getString("SAPCLASS"))
+
+count = ruleSet.count()
+
+if count == 0:
+	ruleHandler.addSimpleWarningForRule(mappingRule)
+else:
+	rule = ruleSet.moveFirst()
+	eqart = rbnrMap[rule.getString("DEFAULTVALUE")]
+
+ruleSet.close()
+mappedRawValue = eqart
